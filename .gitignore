@@ -7,3 +7,7 @@ dist/*
 !dist/builtin
 
 !dist/hw4_assets/
+
+package.json
+
+package-lock.json
