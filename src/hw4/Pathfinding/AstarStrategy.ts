@@ -19,6 +19,7 @@ import AstarNode from "./AstarNode";
  *       Find node (C) with minimum distance(G+H)
  *       if (C) is already in OPENLIST, ignore node (B)
  *  Repeat
+ *  The path to return is the contents of CLOSEDLIST
  */
 
 /**
@@ -35,9 +36,33 @@ export default class AstarStrategy extends NavPathStrat {
      * @see NavPathStrat.buildPath()
      */
     public buildPath(to: Vec2, from: Vec2): NavigationPath {
+        let openList = [];
+        let closedList = [];
+        // Get the closest nodes in the graph to our to and from positions
         let start = this.mesh.graph.snap(from);
+		let end = this.mesh.graph.snap(to);
+
+        openList.push()
+        this.calcHeuristic(start, end);
 
 
         return new NavigationPath(new Stack<Vec2>());
+    }
+
+    // start and end are Nodes in this.mesh.graph that closely correlate with positions
+    private calcHeuristic(start: number, end: number): number {
+        // calculate the estimated distance from start to end
+        // need to take into account obstacles and walls
+
+        // the graph has edges that are distances between nodes
+        let edges = this.mesh.graph.getEdges(start);
+        while (edges.next !== null) {
+            console.log(this.mesh.graph.getNodePosition(start)+
+            " is "+ edges.weight+
+            " to "+this.mesh.graph.getNodePosition(edges.y));
+            edges = edges.next;
+        }
+
+        return 0;
     }
 }
