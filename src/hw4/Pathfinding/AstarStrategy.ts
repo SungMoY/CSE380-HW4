@@ -55,7 +55,7 @@ export default class AstarStrategy extends NavPathStrat {
         
             if (current == end) {
                 // Reconstruct path
-                console.log("PATH FOUND")
+                // console.log("PATH FOUND")
                 return new NavigationPath(this.endAlgo(parent, end));
             }
         
@@ -80,7 +80,7 @@ export default class AstarStrategy extends NavPathStrat {
         }
         
         // No path found
-        console.log("NO PATH FOUND")
+        // console.log("NO PATH FOUND")
         return new NavigationPath(new Stack());    
     }
 
@@ -124,7 +124,7 @@ export default class AstarStrategy extends NavPathStrat {
 
     // creates the path stack for this function to return using parents
     private endAlgo(parent, end): Stack<Vec2> {
-        console.log("CONSTRUCTING PATH")
+        // console.log("CONSTRUCTING PATH")
         let path = new Stack<Vec2>(this.mesh.graph.numVertices)
         let current = end
         while (current !== -1) {

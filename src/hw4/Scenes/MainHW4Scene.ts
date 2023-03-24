@@ -77,7 +77,8 @@ export default class MainHW4Scene extends HW4Scene {
      */
     public override loadScene() {
         // Load the player and enemy spritesheets
-        this.load.spritesheet("player1", "hw4_assets/spritesheets/player1.json");
+        //this.load.spritesheet("player1", "hw4_assets/spritesheets/player1.json");
+        this.load.spritesheet("player1", "hw4_assets/spritesheets/mag_net.json");
 
         // Load in the enemy sprites
         this.load.spritesheet("BlueEnemy", "hw4_assets/spritesheets/BlueEnemy.json");
@@ -219,6 +220,7 @@ export default class MainHW4Scene extends HW4Scene {
     protected initializePlayer(): void {
         let player = this.add.animatedSprite(PlayerActor, "player1", "primary");
         player.position.set(20, 120);
+        player.scale.set(1/8, 1/8)
         player.battleGroup = 2;
 
         player.health = 10;
@@ -236,7 +238,7 @@ export default class MainHW4Scene extends HW4Scene {
         player.addPhysics(new AABB(Vec2.ZERO, new Vec2(8, 8)));
 
         // Give the player a healthbar
-        let healthbar = new HealthbarHUD(this, player, "primary", {size: player.size.clone().scaled(2, 1/2), offset: player.size.clone().scaled(0, -1/2)});
+        let healthbar = new HealthbarHUD(this, player, "primary", {size: player.size.clone().scaled(1/4, 1/16), offset: player.size.clone().scaled(0, -1/10)});
         this.healthbars.set(player.id, healthbar);
 
         // Give the player PlayerAI
