@@ -218,7 +218,7 @@ export default class MainHW4Scene extends HW4Scene {
      */
     protected initializePlayer(): void {
         let player = this.add.animatedSprite(PlayerActor, "player1", "primary");
-        player.position.set(40, 40);
+        player.position.set(20, 120);
         player.battleGroup = 2;
 
         player.health = 10;
@@ -263,7 +263,8 @@ export default class MainHW4Scene extends HW4Scene {
             npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(7, 7)), null, false);
 
             npc.battleGroup = 1;
-            npc.speed = 10;
+            // npc speed changed from 10 to 1
+            npc.speed = 1;
             npc.health = 10;
             npc.maxHealth = 10;
             npc.navkey = "navmesh";
@@ -288,7 +289,8 @@ export default class MainHW4Scene extends HW4Scene {
             
             // Set the NPCs stats
             npc.battleGroup = 1
-            npc.speed = 10;
+            // npc speed changed from 10 to 1
+            npc.speed = 1;
             npc.health = 1;
             npc.maxHealth = 10;
             npc.navkey = "navmesh";
@@ -315,7 +317,8 @@ export default class MainHW4Scene extends HW4Scene {
             this.healthbars.set(npc.id, healthbar);
 
             npc.battleGroup = 2
-            npc.speed = 10;
+            // npc speed changed from 10 to 1
+            npc.speed = 1;
             npc.health = 1;
             npc.maxHealth = 10;
             npc.navkey = "navmesh";
@@ -337,7 +340,8 @@ export default class MainHW4Scene extends HW4Scene {
             npc.addPhysics(new AABB(Vec2.ZERO, new Vec2(7, 7)), null, false);
 
             npc.battleGroup = 2;
-            npc.speed = 10;
+            // npc speed changed from 10 to 1
+            npc.speed = 1;
             npc.health = 1;
             npc.maxHealth = 10;
             npc.navkey = "navmesh";
@@ -432,8 +436,8 @@ export default class MainHW4Scene extends HW4Scene {
         navmesh.registerStrategy("astar", new AstarStrategy(navmesh));
 
         // TODO set the strategy to use A* pathfinding
-        navmesh.setStrategy("direct");
-        //navmesh.setStrategy("astar");
+        // navmesh.setStrategy("direct");
+        navmesh.setStrategy("astar");
 
         // Add this navmesh to the navigation manager
         this.navManager.addNavigableEntity("navmesh", navmesh);

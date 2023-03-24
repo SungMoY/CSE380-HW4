@@ -6,7 +6,7 @@ import Idle from "../NPCActions/GotoAction";
 import { TargetExists } from "../NPCStatuses/TargetExists";
 import BasicFinder from "../../../GameSystems/Searching/BasicFinder";
 import { ClosestPositioned } from "../../../GameSystems/Searching/HW4Reducers";
-import { BattlerActiveFilter, BattlerGroupFilter, BattlerHealthFilter, ItemFilter, RangeFilter, VisibleItemFilter } from "../../../GameSystems/Searching/HW4Filters";
+import { BattlerActiveFilter, BattlerGroupFilter, BattlerHealthFilter, AllyFilter, ItemFilter, RangeFilter, VisibleItemFilter } from "../../../GameSystems/Searching/HW4Filters";
 import PickupItem from "../NPCActions/PickupItem";
 import UseHealthpack from "../NPCActions/UseHealthpack";
 import Healthpack from "../../../GameSystems/ItemSystem/Items/Healthpack";
@@ -14,6 +14,8 @@ import Item from "../../../GameSystems/ItemSystem/Item";
 import { HasItem } from "../NPCStatuses/HasItem";
 import FalseStatus from "../NPCStatuses/FalseStatus";
 import Battler from "../../../GameSystems/BattleSystem/Battler";
+import GoapAction from "../../../../Wolfie2D/AI/Goap/GoapAction";
+import GoapState from "../../../../Wolfie2D/AI/Goap/GoapState";
 
 
 /**
@@ -49,10 +51,43 @@ export default class HealerBehavior extends NPCBehavior  {
 
         // TODO configure the rest of the healer actions
 
+        // pick up closest visible healthpack from pool of healthpacks in scene
+        let pickupHealthpack = new PickupItem(this, this.owner);
+        pickupHealthpack.targets = scene.getHealthpacks();
+        console.log(pickupHealthpack.targets)
+        pickupHealthpack.targetFinder = new BasicFinder<Item>(ClosestPositioned(this.owner), VisibleItemFilter(), ItemFilter(Healthpack));
+        pickupHealthpack.addPrecondition(HealerStatuses.HPACK_EXISTS);
+        pickupHealthpack.addEffect(HealerStatuses.HAS_HPACK);
+        pickupHealthpack.cost = 5;
+        this.addState(HealerActions.PICKUP_HPACK, pickupHealthpack);
+
+        // use healthpack on closest, active ally battler whose health is less than half their max hp
+        // choose battler from pool of battlers in the scene
+        let useHealthpack = new UseHealthpack(this, this.owner);
+        useHealthpack.targets = scene.getBattlers();
+        // filters are is ally, is battler, health is less than half max
+
+        // i need to know what the max.hp value is for a battler. Get a battle group from the battler and get the max hp from that
+        // iterate through scene.getBattlers until hit a battler that is an ally. Then get the max health from that battler
+        let currBattler = scene.getBattlers()[0];
+        for (let i = 0; i < scene.getBattlers().length; i++) {
+            if (currBattler.battleGroup === this.owner.battleGroup) {
+                break;
+            }
+            currBattler = scene.getBattlers()[i];
+        }
+        useHealthpack.targetFinder = new BasicFinder<Battler>(ClosestPositioned(this.owner), BattlerGroupFilter([this.owner.battleGroup]), BattlerActiveFilter(), BattlerHealthFilter(0, currBattler.maxHealth/2));
+        
+        useHealthpack.addPrecondition(HealerStatuses.HAS_HPACK);
+        useHealthpack.addPrecondition(HealerStatuses.ALLY_EXISTS);
+        useHealthpack.addEffect(HealerStatuses.HAS_HPACK);
+        useHealthpack.cost = 1;
+        this.addState(HealerActions.USE_HPACK, useHealthpack);
+
         // Idle action
         let idle = new Idle(this, this.owner);
         idle.addEffect(HealerStatuses.GOAL);
-        idle.cost = 100;
+        idle.cost = 1000;
         this.addState(HealerActions.IDLE, idle);
 
         /* ######### Set the healers goal ######## */
@@ -74,10 +109,19 @@ export default class HealerBehavior extends NPCBehavior  {
         super.update(deltaT);
     }
 
+
+    public override addState(stateName: HealerActions, state: GoapAction): void {
+        super.addState(stateName, state);
+    }
+
+    public override addStatus(statusName: HealerStatuses, status: GoapState): void {
+        super.addStatus(statusName, status);
+    }
 }
 
+export type HealerStatuses = typeof HealerStatuses[keyof typeof HealerStatuses];
 // World states for the healer
-const HealerStatuses = {
+export const HealerStatuses = {
 
     // Whether or not a healthpack exists in the world
     HPACK_EXISTS: "hpack-exists",
@@ -94,7 +138,8 @@ const HealerStatuses = {
 } as const
 
 // Healer actions
-const HealerActions = {
+export type HealerActions = typeof HealerActions[keyof typeof HealerActions];
+export const HealerActions = {
 
     PICKUP_HPACK: "pickup-hpack",
 

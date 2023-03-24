@@ -54,6 +54,8 @@ export default class MainMenu extends Scene {
         while(this.receiver.hasNextEvent()){
             this.handleEvent(this.receiver.getNextEvent());
         }
+        // this line added for testing convenience. Remove when done
+        // this.sceneManager.changeToScene(AstarDemoScene)
     }
 
     public handleEvent(event: GameEvent): void {

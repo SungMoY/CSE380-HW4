@@ -19,6 +19,8 @@ export default class Moving extends PlayerState {
 
     public override update(deltaT: number): void {
         super.update(deltaT);
+        // print out current position vec2
+        // console.log(this.parent.owner.position.x + ", " + this.parent.owner.position.y);
         if (this.parent.controller.moveDir.equals(Vec2.ZERO)) {
             this.finished(PlayerStateType.IDLE);
         }

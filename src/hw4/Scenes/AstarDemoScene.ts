@@ -52,9 +52,10 @@ export default class AStarDemoScene extends Scene {
         // Create a dummy NPC
         this.npc = this.add.animatedSprite(NPCActor, "BlueEnemy", "primary")
         this.npc.addPhysics();
+        this.npc.collisionShape.halfSize.scaleTo(0.25);
         this.npc.position.copy(new Vec2(25, 450));
         this.destination = new Vec2(450, 25);
-        // this.destination = new Vec2(200, 200)
+        // this.destination = new Vec2(300, 300)
 
         // The little blue rectangle in the top-right is where the NPC is trying to get to
         let destination = this.add.graphic(GraphicType.RECT, "primary", {position: this.destination, size: new Vec2(20, 20)})

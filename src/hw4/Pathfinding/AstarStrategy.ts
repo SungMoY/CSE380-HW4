@@ -51,7 +51,6 @@ export default class AstarStrategy extends NavPathStrat {
             // Sort openList by f score
             openList.sort((a, b) => data[a].f - data[b].f);
             let current = openList.shift();
-            console.log(openList.length, current, end)
 
         
             if (current == end) {
@@ -62,7 +61,6 @@ export default class AstarStrategy extends NavPathStrat {
         
             let neighbors = this.getNeighbors(current);
             if (neighbors.length < 3) continue;
-            console.log(neighbors)
             for (let neighbor of neighbors) {
 
                 if (closedList.includes(neighbor)) continue;
@@ -100,6 +98,7 @@ export default class AstarStrategy extends NavPathStrat {
     }
 
     // returns the weight of an edge between two nodes
+    // this always gives 8 in this case bc that is the length of each tile
     private getWeight(node1, node2) {
         let edges = this.mesh.graph.getEdges(node1)
         while (edges.next !== null) {

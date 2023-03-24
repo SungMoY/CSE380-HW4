@@ -17,12 +17,36 @@ export default class UseHealthpack extends NPCAction {
     // The target we are going to set the actor to target
     protected override _target: Battler | null;
 
+    protected healthpack: Healthpack | null;
+
     public constructor(parent: NPCBehavior, actor: NPCActor) { 
         super(parent, actor);
+        this.healthpack =  null;
+        this._target = null;
     }
 
     public performAction(target: Battler): void {
+        // heal the selected target
 
+    }
+
+    public onEnter(options: Record<string, any>): void {
+        super.onEnter(options);
+        // Find a healthpack in the inventory
+        let healthpack = this.actor.inventory.find(item => item.constructor === Healthpack);
+        if (healthpack !== null && healthpack.constructor === Healthpack) {
+            this.healthpack = healthpack; 
+        }
+    }
+
+    public update(deltaT: number): void {
+        super.update(deltaT);
+    }
+
+    public onExit(): Record<string, any> {
+        // Clear the reference to the healthpack
+        this.healthpack = null;
+        return super.onExit();
     }
 
 }
