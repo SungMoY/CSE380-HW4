@@ -54,6 +54,7 @@ export default class AStarDemoScene extends Scene {
         this.npc.addPhysics();
         this.npc.position.copy(new Vec2(25, 450));
         this.destination = new Vec2(450, 25);
+        // this.destination = new Vec2(200, 200)
 
         // The little blue rectangle in the top-right is where the NPC is trying to get to
         let destination = this.add.graphic(GraphicType.RECT, "primary", {position: this.destination, size: new Vec2(20, 20)})

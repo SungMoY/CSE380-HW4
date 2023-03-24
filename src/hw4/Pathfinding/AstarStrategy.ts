@@ -44,40 +44,41 @@ export default class AstarStrategy extends NavPathStrat {
         let data = {}
         let parent = {}
 
-        data[start] = { g: 0, h: this.heuristic(start, end), f: this.heuristic(start, end) };
+        data[start] = { g: 0, h: 0, f: 0 };
         parent[start] = -1;
 
         while (openList.length > 0) {
             // Sort openList by f score
             openList.sort((a, b) => data[a].f - data[b].f);
             let current = openList.shift();
-            closedList.push(current);
+            console.log(openList.length, current, end)
+
         
-            if (current === end) {
-                // Reletruct path
+            if (current == end) {
+                // Reconstruct path
                 console.log("PATH FOUND")
                 return new NavigationPath(this.endAlgo(parent, end));
             }
         
             let neighbors = this.getNeighbors(current);
+            if (neighbors.length < 3) continue;
+            console.log(neighbors)
             for (let neighbor of neighbors) {
+
                 if (closedList.includes(neighbor)) continue;
-                //also check if neighbor has three edges. if it has less, skip it
-                let edges = this.mesh.graph.getEdges(neighbor)
-                let numEdges = 0
-                while (edges.next !== null) {
-                    numEdges++
-                    edges = edges.next
-                }
-                if (numEdges < 3) continue;
             
                 let newPathToNeighbor = data[current].g + this.getWeight(current, neighbor);
+
                 if (newPathToNeighbor < data[neighbor]?.g || !openList.includes(neighbor)) {
                     data[neighbor] = { g: newPathToNeighbor, h: this.heuristic(neighbor, end), f: newPathToNeighbor + this.heuristic(neighbor, end) };
+
                     parent[neighbor] = current;
-                    if (!openList.includes(neighbor)) openList.push(neighbor);
+
+                    openList.push(neighbor);
+                    
                 }
             }
+            closedList.push(current);
         }
         
         // No path found
@@ -89,9 +90,11 @@ export default class AstarStrategy extends NavPathStrat {
     private getNeighbors(node) {
         let neighbors = []
         let edges = this.mesh.graph.getEdges(node)
+        neighbors.push(edges.y)
         while (edges.next !== null) {
-            neighbors.push(edges.y)
             edges = edges.next
+            neighbors.push(edges.y)
+
         }
         return neighbors
     }
@@ -115,10 +118,9 @@ export default class AstarStrategy extends NavPathStrat {
         let endPos = this.mesh.graph.getNodePosition(end)
         let distX = Math.abs(nodePos.x - endPos.x)
         let distY = Math.abs(nodePos.y - endPos.y)
-        if (distX > distY) {
-            return 14*distY + 10*(distX-distY)
-        }
-        return 14*distX + 10*(distY-distX)
+        
+        // return manhattan distance
+        return distX + distY
     }
 
     // creates the path stack for this function to return using parents
